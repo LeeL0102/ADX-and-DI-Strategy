@@ -1,0 +1,27 @@
+//@version=5
+strategy("ADX and DI Strategy", overlay=true)
+
+// ADX和DI参数
+length = input(14, title="Length")
+adxSmoothing = input(14, title="ADX Smoothing")
+adxLevel = input(25, title="ADX Level")
+
+// 计算ADX和DI
+[diPlus, diMinus, adx] = ta.dmi(length, adxSmoothing)
+
+// 定义买入和卖出条件
+longCondition = diPlus > diMinus and adx > adxLevel
+shortCondition = diMinus > diPlus and adx > adxLevel
+
+// 执行策略
+if (longCondition)
+    strategy.entry("Long", strategy.long)
+
+if (shortCondition)
+    strategy.close("Long")
+
+// 绘制指标
+plot(adx, title="ADX", color=color.purple)
+hline(adxLevel, title="ADX Level", color=color.gray)
+plot(diPlus, title="DI+", color=color.green)
+plot(diMinus, title="DI-", color=color.red)
